@@ -1,106 +1,56 @@
-// 3 stages of problem solving
+// 3 stages of problem solving: (1. Understanding) Understand the problem, (2. Planning) make a plan to solve the problem, (3. Pseudocode) write out the logic of each step of the plan.
 
-// 1. Understanding - what is the problem?
-// Create a program to play "rock paper scissors" with the computer
+// 1. Understanding: create a page where a user can play the rock, paper, scissors game with computer.
+// How to play? The user input his choice by clicking one of three Rock, Paper, and Scissors buttons. Then compare the user's choice to the computer's choice. Return the comparison's result.
 
-// 2. Planning - how to solve the problem?
-// Input 2 values, the user's choice, which is entered manually, and the computer's choice, which is generated randomly.
-// Compare the 2 values to identify the winner.
-// Output the winner.
+// 2. Planning: create a web page where a user can play the rock-paper-scissors game with computer
+// Create a script.js to write the program to:
+// generate the computer's choice,
+// collect the user's choice by listening to the click event on the buttons,
+// the game continues until one player win 5 rounds in total,
+// display the winner at the bottom of the page.
 
-// 3. Pseudocode - write out the logic of the program
-// Ask the user to enter the first value through a promt. If the user doesn't enter any value, ask again.
-// Generate the second value randomly through a function.
-// Compare the 2 values:
-// If the user wins, output "You win!",
-// If the user loses, output "You lose!",
-// If they tie, repeat the game.
+// 3. Pseudocode: 
 
-// 4. Divide and conquer
-// How to check if the user doesn't enter any value? Use strict equality (===) to check. If it's falsy, ask again.
-// How to create a function which randomly generate the computer's choice? Use Math.random().
+// Add event listeners to the buttons
+const buttons = document.querySelectorAll('button');
+let playerScore = 0;
+let computerScore = 0;
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const playerSelection = button.textContent;
+        const computerSelection = getComputerChoice();
+        const result = playRound(playerSelection, computerSelection);
+        if (result === 'Player wins!') {
+            playerScore += 1;
+        } else if (result === 'Computer wins!') {
+            computerScore += 1;
+        }
+        const resultDiv = document.createElement('div');
+        resultDiv.textContent = `${result}, player score: ${playerScore}, computer score: ${computerScore}`;
+        document.body.appendChild(resultDiv);
+        const theWinner = document.createElement('div');
+        if (playerScore === 5) {
+            theWinner.textContent = 'The winner is player!';
+        } else if (computerScore === 5) {
+            theWinner.textContent = 'The winner is computer';
+        }
+        document.body.appendChild(theWinner);
+    });
+});
 
-function getPlayerChoice() {
-    return prompt('What is your choice?', '').toLowerCase();
-}
-
-function getComputerChoice() {
-    // put 3 values in a variable
-    let choices = ['rock', 'paper', 'scissors'];
-    // generate random number
-    let ranNum = Math.floor(Math.random() * 3);
-    // return one of 3 values
-    return choices[ranNum];
-}
+const getComputerChoice = () => ['rock', 'paper', 'scissors'][Math.floor(Math.random() * 3)];
 
 function playRound(playerSelection, computerSelection) {
-    if (playerSelection === 'rock') {
-        if (computerSelection === 'paper') {
-            return 'You lose!';
-        } else if (computerSelection === 'scissors') {
-            return 'You win!';
-        } else {
-            return 'Tie!';
-        }
-    } else if (playerSelection === 'paper') {
-        if (computerSelection === 'scissors') {
-            return 'You lose!';
-        } else if (computerSelection === 'rock') {
-            return 'You win!';
-        } else {
-            return 'Tie!';
-        }
+    if (playerSelection === computerSelection) {
+        return 'Tie!';
+    } else if (
+        (playerSelection === 'rock' && computerSelection === 'scissors') ||
+        (playerSelection === 'scissors' && computerSelection === 'paper') ||
+        (playerSelection === 'paper' && computerSelection === 'rock')
+    ) {
+        return 'Player wins!';
     } else {
-        if (computerSelection === 'rock') {
-            return 'You lose!';
-        } else if (computerSelection === 'paper') {
-            return 'You win!';
-        } else {
-            return 'Tie!';
-        }
+        return 'Computer wins!';
     }
 }
-
-function game() {
-    
-    let total = 0;
-    let count = 0;
-    let wins = 0;
-    let losts = 0;
-    let ties = 0;
-
-    while (count < 5) {
-
-        const playerSelection = prompt('What is your choice?');
-        const computerSelection = getComputerChoice();
-
-        let result = playRound(playerSelection, computerSelection);
-
-        // count total games
-        ++total;
-
-        if (result !== 'Tie!') {
-
-            // count not-tie games
-            ++count;
-
-            if (result === 'You win!') {
-                // count wins
-                ++wins;
-            } else {
-                // count losts
-                ++losts;
-            }
-        } else {
-            ++ties;
-            continue;
-        }
-
-        console.log(`Game result is ${result}, ${wins} wins, ${losts} losts, ${ties} ties.`);
-
-    }
-
-    return `You have played ${total} games, won ${wins}, lost ${losts}, tied ${ties}. Overall, You ${wins > losts ? 'won' : 'lost'}.`;
-}
-
-console.log(game());
